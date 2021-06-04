@@ -27,10 +27,10 @@ def create_flight(flight_id):
     rate_of_change_in_angle_of_attack = random.random()
 
     cur_time = 0
-    alt_noise = np.random.normal(0, 5, 1)
-    alt_noise_buffet = np.random.normal(0, 10, 1)
-    airspeed_noise = np.random.normal(0, 5, 1)
-    airspeed_noise_buffet = np.random.normal(0, 10, 1)
+    alt_noise = round(np.random.normal(0, 5, 1)[0], 6)
+    alt_noise_buffet = round(np.random.normal(0, 10, 1)[0], 6)
+    airspeed_noise = round(np.random.normal(0, 5, 1)[0], 6)
+    airspeed_noise_buffet = round(np.random.normal(0, 10, 1)[0], 6)
     cur_altitude = initial_alt
     cur_airspeed = initial_airspeed
     roll = 0
@@ -91,19 +91,19 @@ def generate_flight_record(flight_id, initial_alt, time_to_buffet, time_from_buf
 
     cur_time = past_time + .1
     delta_time = cur_time - past_time
-    alt_noise = np.random.normal(0, 5, 1)
-    alt_noise_buffet = np.random.normal(0, 10, 1)
-    airspeed_noise = np.random.normal(0, 5, 1)
-    airspeed_noise_buffet = np.random.normal(0, 10, 1)
+    alt_noise = round(np.random.normal(0, 5, 1)[0], 6)
+    alt_noise_buffet = round(np.random.normal(0, 10, 1)[0], 6)
+    airspeed_noise = round(np.random.normal(0, 5, 1)[0], 6)
+    airspeed_noise_buffet = round(np.random.normal(0, 10, 1)[0], 6)
     cur_alt = initial_alt + alt_noise
     if cur_time > time_from_buffet_to_uncommanded_descent_high:
-        cur_alt = past_alt - (magnitude_of_uncommanded_descent_high / delta_time) + alt_noise
+        cur_alt = round(past_alt - (magnitude_of_uncommanded_descent_high / delta_time) + alt_noise, 6)
     elif cur_time > time_from_buffet_to_uncommanded_descent:
-        cur_alt = past_alt - (magnitude_of_uncommanded_descent / delta_time) + alt_noise
+        cur_alt = round(past_alt - (magnitude_of_uncommanded_descent / delta_time) + alt_noise, 6)
     elif cur_time > (time_from_buffet_to_uncommanded_descent - 5):
         cur_alt = initial_alt + alt_noise_buffet
 
-    vertical_speed = (cur_alt - past_alt) / delta_time
+    vertical_speed = round((cur_alt - past_alt) / delta_time, 6)
 
     angle_of_attack = 0
     if cur_time > time_from_buffet_to_positive_angle_of_attack:
@@ -116,13 +116,16 @@ def generate_flight_record(flight_id, initial_alt, time_to_buffet, time_from_buf
     if cur_time > time_to_buffet:
         cur_airspeed = past_airspeed + airspeed_noise_buffet
 
-    flight_path_angle = math.asine(vertical_speed / airspeed_noise)
+    flight_path_angle = 0
+
+    if airspeed_noise != 0:
+        flight_path_angle = round(np.arcsin(vertical_speed / cur_airspeed), 6)
 
     pitch_angle = flight_path_angle + angle_of_attack
 
     roll = 0
     if cur_time > time_from_buffet_to_uncommanded_roll:
-        math.sin()
+        roll = np.sin(flight_path_angle)
 
     return FlightData(
         flight_id,
