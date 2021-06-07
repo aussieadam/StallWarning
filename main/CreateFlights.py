@@ -1,6 +1,7 @@
 import math
 import random
 import numpy as np
+import pandas as pd
 
 from dcd.FlightData import FlightData
 import dcd.FlightDataHelper as flightHelper
@@ -33,6 +34,10 @@ if __name__ == '__main__':
                                                                 last_flight_record.angle_of_attack)
         flight_series.append(new_flight_record)
 
+    df = pd.DataFrame([x.to_dict() for x in flight_series])
+
+    print(df)
 
     for i in range(10):
         print(flight_series[i].to_dict())
+
